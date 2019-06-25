@@ -68,7 +68,7 @@ def generate_data(l):
         folder = args.checkpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
-        filename = os.path.join(folder + "train_examples_2")
+        filename = os.path.join(folder + "train_examples_3")
         with open(filename, "ab+") as f:
             pickle.dump(train_example, f)
     finally:
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     for iteration in range(100):
         jobs = []
 
-        for i in range(2):
+        for i in range(6):
             p = Process(target=generate_data, args=(lock,))
             jobs.append(p)
             p.start()
