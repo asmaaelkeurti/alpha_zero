@@ -32,4 +32,4 @@ if __name__ == '__main__':
 
     nnet.train(trainExamples)
 
-    nnet.save_model(filename="init_model")
+    nnet.save_model(filename="second_model")

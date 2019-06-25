@@ -6,7 +6,7 @@ import numpy as np
 import time, os, sys
 from pickle import Pickler, Unpickler
 from random import shuffle
-from GobangGame import display
+from GobangGame import display, display_pi
 
 
 class Coach:
@@ -60,6 +60,7 @@ class Coach:
 
             r = self.game.get_game_ended(board, self.curPlayer)
             display(board)
+            # display_pi(np.array(pi[:-1]).reshape((len(canonicalBoard), len(canonicalBoard))))
 
             if r != 0:
                 return [(x[0], x[2], r * ((-1) ** (x[1] != self.curPlayer))) for x in trainExamples]   # [(x[0],x[2],r)]

@@ -24,7 +24,7 @@ args = dotdict({
 
     'checkpoint': './temp/',
     'load_model': False,
-    'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
+    'load_folder_file': ('/dev/models/8x100x50', 'best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
 })
@@ -37,14 +37,16 @@ def mcts_test():
 
     mcts = MCTS(g, nnet, args)
 
-    b.execute_move((1, 1), 1)
-    b.execute_move((1, 2), 1)
-    b.execute_move((1, 3), 1)
+    b.execute_move((4, 1), 1)
+    b.execute_move((3, 2), 1)
+    b.execute_move((2, 3), 1)
+    b.execute_move((5, 0), 1)
     # b.execute_move((1, 4), 1)
 
-    b.execute_move((3, 2), -1)
     b.execute_move((3, 3), -1)
     b.execute_move((3, 4), -1)
+    b.execute_move((3, 5), -1)
+    b.execute_move((3, 6), -1)
     # b.execute_move((3, 5), -1)
 
     curPlayer = 1
@@ -68,7 +70,7 @@ def generate_data(l):
         folder = args.checkpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
-        filename = os.path.join(folder + "train_examples_3")
+        filename = os.path.join(folder + "train_examples_4")
         with open(filename, "ab+") as f:
             pickle.dump(train_example, f)
     finally:
@@ -81,7 +83,7 @@ if __name__ == "__main__":
     for iteration in range(100):
         jobs = []
 
-        for i in range(6):
+        for i in range(8):
             p = Process(target=generate_data, args=(lock,))
             jobs.append(p)
             p.start()
@@ -91,3 +93,5 @@ if __name__ == "__main__":
 
         print(iteration)
 
+if __name__ == "x":
+    mcts_test()

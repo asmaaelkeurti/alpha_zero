@@ -12,6 +12,7 @@ from NeuralNet import NeuralNet
 from keras.callbacks import EarlyStopping
 import argparse
 from GobangNNet import GobangNNet as onnet
+from keras.models import load_model
 sys.path.append('..')
 
 args = dotdict({
@@ -20,7 +21,8 @@ args = dotdict({
     'epochs': 10,
     'batch_size': 512,
     'cuda': True,
-    'num_channels': 512,
+    # 'num_channels': 512,
+    'num_channels': 12
 })
 
 
@@ -82,3 +84,12 @@ class NNetWrapper(NeuralNet):
         else:
             print("Checkpoint Directory exists! ")
         self.nnet.model.save(filepath)
+
+    def load_model(self, folder='checkpoint', filename='model'):
+        filepath = os.path.join(folder, filename)
+        if not os.path.exists(folder):
+            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+            os.mkdir(folder)
+        else:
+            print("Checkpoint Directory exists! ")
+        self.nnet.model = load_model(filepath)
