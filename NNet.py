@@ -18,7 +18,7 @@ sys.path.append('..')
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 10,
+    'epochs': 30,
     'batch_size': 512,
     'cuda': True,
     # 'num_channels': 512,
@@ -41,7 +41,8 @@ class NNetWrapper(NeuralNet):
         input_boards = np.asarray(input_boards)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], validation_split=0.2, batch_size=args.batch_size, epochs=args.epochs, callbacks=[EarlyStopping()])
+        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], validation_split=0.2, batch_size=args.batch_size, epochs=args.epochs, callbacks=[EarlyStopping(patience=3)])
+        # callbacks=[EarlyStopping()]
 
     def evaluate_model(self, examples):
         """

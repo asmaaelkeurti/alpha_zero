@@ -31,10 +31,11 @@ def arena_process(i):
     g = Game(8)
 
     nnet = nn(g)
-    nnet.load_model(filename="second_model")
+    nnet.load_model(filename="third_model")
     nmcts = MCTS(g, nnet, args)
 
     pnet = nn(g)
+    pnet.load_model(filename="second_model")
     pmcts = MCTS(g, pnet, args)
 
     def player1(x):
@@ -63,7 +64,6 @@ if __name__ == '__main__':
 
     print(win_1)
     print(win_2)
-
 
 
 

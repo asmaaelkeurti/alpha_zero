@@ -83,7 +83,7 @@ if __name__ == "__main__":
     for iteration in range(100):
         jobs = []
 
-        for i in range(8):
+        for i in range(4):
             p = Process(target=generate_data, args=(lock,))
             jobs.append(p)
             p.start()

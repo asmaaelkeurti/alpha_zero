@@ -32,4 +32,12 @@ if __name__ == '__main__':
 
     nnet.train(trainExamples)
 
-    nnet.save_model(filename="second_model")
+    nnet.save_model(filename="third_model")
+
+if __name__ == 'x':
+    trainExamples = merge_data()
+    g = Game(8)
+    nnet = nn(g)
+    nnet.load_model(filename="third_model")
+    print(nnet.evaluate_model(trainExamples))
+
