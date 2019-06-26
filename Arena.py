@@ -90,39 +90,21 @@ class Arena:
                 twoWon += 1
             else:
                 draws += 1
-            # bookkeeping + plot progress
             eps += 1
-            # eps_time.update(time.time() - end)
-            # end = time.time()
-            # bar.suffix = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps + 1,
-            #                                                                                            maxeps=maxeps,
-            #                                                                                            et=eps_time.avg,
-            #                                                                                            total=bar.elapsed_td,
-            #                                                                                            eta=bar.eta_td)
-            # bar.next()
+            print(eps)
 
         self.player1, self.player2 = self.player2, self.player1
 
         for _ in range(num):
-            game_result = self.playGame(verbose=verbose)
+            game_result = self.play_game(verbose=verbose)
             if game_result == -1:
                 oneWon += 1
             elif game_result == 1:
                 twoWon += 1
             else:
                 draws += 1
-            # bookkeeping + plot progress
+
             eps += 1
-            # eps_time.update(time.time() - end)
-            end = time.time()
-            # bar.suffix = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps + 1,
-            #                                                                                            maxeps=num,
-            #                                                                                            et=eps_time.avg,
-            #                                                                                            total=bar.elapsed_td,
-            #                                                                                            eta=bar.eta_td)
-            # bar.next()
-
-        # bar.finish()
-
+            print(eps)
         return oneWon, twoWon, draws
 

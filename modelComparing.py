@@ -6,6 +6,7 @@ from MCTS import MCTS
 from utils import *
 from GobangGame import display, display_pi
 from GobangLogic import Board
+from multiprocessing import Process, Queue, Pool
 
 
 args = dotdict({
@@ -14,7 +15,7 @@ args = dotdict({
     'tempThreshold': 25,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'numMCTSSims': 1000,
+    'numMCTSSims': 200,
     'arenaCompare': 40,
     'cpuct': 1,
 
@@ -26,15 +27,15 @@ args = dotdict({
 })
 
 
-if __name__ == '__main__':
+def arena_process(i):
     g = Game(8)
 
-    pnet = nn(g)
     nnet = nn(g)
     nnet.load_model(filename="second_model")
-
-    pmcts = MCTS(g, pnet, args)
     nmcts = MCTS(g, nnet, args)
+
+    pnet = nn(g)
+    pmcts = MCTS(g, pnet, args)
 
     def player1(x):
         pi = pmcts.get_action_prob(x)
@@ -45,12 +46,24 @@ if __name__ == '__main__':
         pi = nmcts.get_action_prob(x)
         return np.random.choice(len(pi), p=pi)
 
-
-    # b = Board(8)
-    # canonicalBoard = g.get_canonical_form(np.array(b.pieces), 1)
-
-    # player1(canonicalBoard)
-
     arena = Arena(player1=lambda x: player1(x), player2=lambda x: player2(x), game=g, display=display)
+    return arena.play_games(8)
 
-    arena.play_game(verbose=True)
+
+def f(x):
+    return x * x
+
+
+if __name__ == '__main__':
+    with Pool(8) as p:
+        result = p.map(arena_process, range(8))
+
+    win_1 = sum([i[0] for i in result])
+    win_2 = sum([i[1] for i in result])
+
+    print(win_1)
+    print(win_2)
+
+
+
+

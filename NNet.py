@@ -43,6 +43,16 @@ class NNetWrapper(NeuralNet):
         target_vs = np.asarray(target_vs)
         self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], validation_split=0.2, batch_size=args.batch_size, epochs=args.epochs, callbacks=[EarlyStopping()])
 
+    def evaluate_model(self, examples):
+        """
+        examples: list of examples, each example is of form (board, pi, v)
+        """
+        input_boards, target_pis, target_vs = list(zip(*examples))
+        input_boards = np.asarray(input_boards)
+        target_pis = np.asarray(target_pis)
+        target_vs = np.asarray(target_vs)
+        return self.nnet.model.evaluate(x=input_boards, y=[target_pis, target_vs])
+
     def predict(self, board):
         """
         board: np array with board
@@ -93,3 +103,4 @@ class NNetWrapper(NeuralNet):
         else:
             print("Checkpoint Directory exists! ")
         self.nnet.model = load_model(filepath)
+
