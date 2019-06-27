@@ -59,7 +59,7 @@ class Coach:
             board, self.curPlayer = self.game.get_next_state(board, self.curPlayer, action)
 
             r = self.game.get_game_ended(board, self.curPlayer)
-            display(board)
+            # display(board)
             # display_pi(np.array(pi[:-1]).reshape((len(canonicalBoard), len(canonicalBoard))))
 
             if r != 0:
@@ -89,14 +89,6 @@ class Coach:
                     self.mcts = MCTS(self.game, self.nnet, self.args)  # reset search tree
                     iterationTrainExamples += self.execute_episode()
 
-                    # bookkeeping + plot progress
-                    # eps_time.update(time.time() - end)
-                    # end = time.time()
-                    # bar.suffix = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(
-                    #     eps=eps + 1, maxeps=self.args.numEps, et=eps_time.avg,
-                    #     total=bar.elapsed_td, eta=bar.eta_td)
-                    # bar.next()
-                # bar.finish()
 
                 # save the iteration examples to the history
                 self.trainExamplesHistory.append(iterationTrainExamples)

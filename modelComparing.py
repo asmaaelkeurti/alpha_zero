@@ -4,9 +4,11 @@ from Arena import Arena
 import numpy as np
 from MCTS import MCTS
 from utils import *
-from GobangGame import display, display_pi
-from GobangLogic import Board
-from multiprocessing import Process, Queue, Pool
+from GobangGame import display
+from multiprocessing import Process, Pool, Lock
+from Coach import Coach
+import os
+import pickle
 
 
 args = dotdict({
@@ -15,7 +17,7 @@ args = dotdict({
     'tempThreshold': 25,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'numMCTSSims': 200,
+    'numMCTSSims': 300,
     'arenaCompare': 40,
     'cpuct': 1,
 
@@ -31,11 +33,12 @@ def arena_process(i):
     g = Game(8)
 
     nnet = nn(g)
-    nnet.load_model(filename="third_model")
+    nnet.load_model(filename=("model_auto_" + str(i+1)))
     nmcts = MCTS(g, nnet, args)
 
     pnet = nn(g)
-    pnet.load_model(filename="second_model")
+    if i != 0:
+        pnet.load_model(filename=("model_auto_" + str(i)))
     pmcts = MCTS(g, pnet, args)
 
     def player1(x):
@@ -51,19 +54,89 @@ def arena_process(i):
     return arena.play_games(8)
 
 
-def f(x):
-    return x * x
+def generate_data(l, model_iter):
+    g = Game(8)
+    nnet = nn(g)
+    nnet.load_model(filename=("model_auto_" + str(model_iter + 1)))
+
+    c = Coach(g, nnet, args)
+    train_example = c.execute_episode()
+
+    l.acquire()
+    try:
+        folder = args.checkpoint
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        filename = os.path.join(folder + ("train_examples_auto_" + str(model_iter + 1)))
+        with open(filename, "ab+") as f:
+            pickle.dump(train_example, f)
+    finally:
+        l.release()
+
+
+def merge_data(model_iter):
+    file_list = ["./temp/train_examples_auto_" + str(model_iter+1)]
+    objects = []
+    trainExamples = []
+
+    for f in file_list:
+        with(open(f, "rb")) as openfile:
+            while True:
+                try:
+                    objects.append(pickle.load(openfile))
+                except EOFError:
+                    break
+
+    for o in objects:
+        trainExamples += o
+
+    return trainExamples
 
 
 if __name__ == '__main__':
+    better_model = False
+
+    for i in range(1, 100):
+        with Pool(8) as p:
+            result = p.map(arena_process, [i for _ in range(8)])
+
+        win_1 = sum([i[0] for i in result])
+        win_2 = sum([i[1] for i in result])
+
+        print('model', i+1, 'win_1', win_1, 'win_2', win_2)
+
+        if win_1 < win_2*0.9:
+            lock = Lock()
+
+            for iteration in range(200):
+                jobs = []
+
+                for _ in range(8):
+                    p = Process(target=generate_data, args=(lock, i))
+                    jobs.append(p)
+                    p.start()
+
+                for job in jobs:
+                    job.join()
+
+            trainExamples = merge_data(i)
+            print(len(trainExamples))
+            g = Game(8)
+            nnet = nn(g)
+            nnet.train(trainExamples)
+            nnet.save_model(filename="model_auto_" + str(i+2))
+        else:
+            break
+
+        print(i, 'one model')
+
+
+if __name__ == 'x':
     with Pool(8) as p:
         result = p.map(arena_process, range(8))
 
-    win_1 = sum([i[0] for i in result])
-    win_2 = sum([i[1] for i in result])
+        win_1 = sum([i[0] for i in result])
+        win_2 = sum([i[1] for i in result])
 
-    print(win_1)
-    print(win_2)
-
-
-
+        print(win_1)
+        print(win_2)
