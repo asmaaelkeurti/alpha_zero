@@ -3,7 +3,6 @@ from GobangGame import GobangGame as Game
 from Arena import Arena
 import numpy as np
 from MCTS import MCTS
-from utils import *
 from GobangGame import display
 from multiprocessing import Process, Pool, Lock
 from Coach import Coach
@@ -11,10 +10,10 @@ import os
 import pickle
 
 
-args = dotdict({
+args = {
     'numIters': 10,
     'numEps': 10,
-    'tempThreshold': 25,
+    'tempThreshold': 30,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
     'numMCTSSims': 300,
@@ -26,7 +25,7 @@ args = dotdict({
     'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
-})
+}
 
 
 def arena_process(i):
@@ -96,7 +95,7 @@ def merge_data(model_iter):
 if __name__ == '__main__':
     better_model = False
 
-    for i in range(1, 100):
+    for i in range(3, 100):
         with Pool(8) as p:
             result = p.map(arena_process, [i for _ in range(8)])
 

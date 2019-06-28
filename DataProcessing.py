@@ -4,7 +4,7 @@ from GobangGame import GobangGame as Game
 
 
 def merge_data():
-    file_list = ["./temp/train_examples_2", "./temp/train_examples_2_1", "./temp/train_examples_3"]
+    file_list = ["./temp/train_examples_auto_5"]
     objects = []
     trainExamples = []
 
@@ -22,22 +22,21 @@ def merge_data():
     return trainExamples
 
 
-if __name__ == '__main__':
+if __name__ == 'x':
     trainExamples = merge_data()
 
     print(len(trainExamples))
 
     g = Game(8)
     nnet = nn(g)
-
     nnet.train(trainExamples)
+    nnet.save_model(filename="manual_trained_model")
 
-    nnet.save_model(filename="third_model")
 
-if __name__ == 'x':
+if __name__ == '__main__':
     trainExamples = merge_data()
     g = Game(8)
     nnet = nn(g)
-    nnet.load_model(filename="third_model")
+    nnet.load_model(filename="manual_trained_model")
     print(nnet.evaluate_model(trainExamples))
 
