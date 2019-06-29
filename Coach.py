@@ -59,11 +59,24 @@ class Coach:
             board, self.curPlayer = self.game.get_next_state(board, self.curPlayer, action)
 
             r = self.game.get_game_ended(board, self.curPlayer)
-            # display(board)
+            display(board)
             # display_pi(np.array(pi[:-1]).reshape((len(canonicalBoard), len(canonicalBoard))))
 
+            return_train_examples = []
+
             if r != 0:
-                return [(x[0], x[2], r * ((-1) ** (x[1] != self.curPlayer))) for x in trainExamples]   # [(x[0],x[2],r)]
+                if r == 1:
+                    return_train_examples += [(x[0], x[2], -r) for x in trainExamples if x[1] == self.curPlayer]
+                    return_train_examples += [(x[0], x[2], r) for x in trainExamples if x[1] != self.curPlayer]
+                    return return_train_examples
+                elif r == -1:
+                    return_train_examples += [(x[0], x[2], r) for x in trainExamples if x[1] == self.curPlayer]
+                    return_train_examples += [(x[0], x[2], -r) for x in trainExamples if x[1] != self.curPlayer]
+                    return return_train_examples
+                else:
+                    return []
+
+                # return [(x[0], x[2], r * ((-1) ** (x[1] == self.curPlayer))) for x in trainExamples]
 
     def learn(self):
         """

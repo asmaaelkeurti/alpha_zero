@@ -2,10 +2,10 @@ import pickle
 from NNet import NNetWrapper as nn
 from GobangGame import GobangGame as Game
 from random import shuffle
+import numpy as np
 
 
-def merge_data():
-    file_list = ["./temp/train_examples_auto_6"]
+def merge_data(file_list):
     objects = []
     trainExamples = []
 
@@ -23,8 +23,8 @@ def merge_data():
     return trainExamples
 
 
-if __name__ == '__main__':
-    trainExamples = shuffle(merge_data())
+if __name__ == 'x':
+    trainExamples = shuffle(merge_data(["./temp/train_examples_auto_6"]))
 
     print(len(trainExamples))
 
@@ -34,10 +34,16 @@ if __name__ == '__main__':
     nnet.save_model(filename="manual_trained_model")
 
 
-if __name__ == '__main__':
-    trainExamples = merge_data()
+if __name__ == 'x':
+    trainExamples = merge_data(merge_data(["./temp/train_examples_auto_6"]))
     g = Game(8)
     nnet = nn(g)
     nnet.load_model(filename="manual_trained_model")
     print(nnet.evaluate_model(trainExamples))
+
+if __name__ == '__main__':
+    examples = merge_data(["./temp/train_examples_auto_6"])
+    l_sumup = [(np.sum(i[0]), i[2]) for i in examples]
+    print(sum(i == (0, -1) or i == (-1, 1) for i in l_sumup))
+    print(sum(i == (0, 1) or i == (-1, -1) for i in l_sumup))
 

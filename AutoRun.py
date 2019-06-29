@@ -91,3 +91,13 @@ class AutoRun:
             for job in jobs:
                 job.join()
 
+    def generate_data_debug(self, model_file):
+        nnet = nn(self.game)
+        nnet.load_model(filename=model_file)
+
+        c = Coach(self.game, nnet, self.args)
+        train_example = c.execute_episode()
+
+        l_sum_up = [(np.sum(i[0]), i[2]) for i in train_example]
+        print(sum(i == (0, -1) or i == (-1, 1) for i in l_sum_up))    # second hand win
+        print(sum(i == (0, 1) or i == (-1, -1) for i in l_sum_up))    # first hand win
