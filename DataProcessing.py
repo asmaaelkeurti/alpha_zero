@@ -1,10 +1,11 @@
 import pickle
 from NNet import NNetWrapper as nn
 from GobangGame import GobangGame as Game
+from random import shuffle
 
 
 def merge_data():
-    file_list = ["./temp/train_examples_auto_5"]
+    file_list = ["./temp/train_examples_auto_6"]
     objects = []
     trainExamples = []
 
@@ -22,8 +23,8 @@ def merge_data():
     return trainExamples
 
 
-if __name__ == 'x':
-    trainExamples = merge_data()
+if __name__ == '__main__':
+    trainExamples = shuffle(merge_data())
 
     print(len(trainExamples))
 

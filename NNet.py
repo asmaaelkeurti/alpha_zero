@@ -22,7 +22,7 @@ args = dotdict({
     'batch_size': 512,
     'cuda': True,
     # 'num_channels': 512,
-    'num_channels': 10
+    'num_channels': 12
 })
 
 
@@ -42,7 +42,7 @@ class NNetWrapper(NeuralNet):
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
         self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], validation_split=0.2, batch_size=args.batch_size,
-                            epochs=args.epochs, callbacks=[EarlyStopping()])
+                            epochs=args.epochs, callbacks=[EarlyStopping(patience=2)])
         # callbacks=[EarlyStopping()]
 
     def evaluate_model(self, examples):

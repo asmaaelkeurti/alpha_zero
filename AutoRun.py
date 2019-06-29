@@ -4,6 +4,9 @@ from MCTS import MCTS
 import numpy as np
 from GobangGame import display
 from Arena import Arena
+from multiprocessing import Pool, Lock, Process
+from Coach import Coach
+import os
 
 
 class AutoRun:
@@ -48,8 +51,43 @@ class AutoRun:
         arena = Arena(player1=lambda x: old_player(x), player2=lambda x: new_player(x), game=self.game, display=display)
         return arena.play_games(r, verbose=verbose)
 
-    def arena_process_parallel(self, arguments):
+    def arena_process_parallel_function(self, arguments):
         return self.arena_process(arguments[0], arguments[1], arguments[2], arguments[3])
 
+    def arena_process_parallel(self, r, player1_model, palyer2_model):
+        with Pool(8) as p:
+            arena_result = p.map(self.arena_process_parallel_function,
+                                 [[r, player1_model, palyer2_model, False] for _ in range(8)])
+        return sum([i[0] for i in arena_result]), sum([i[0] for i in arena_result])
 
+    def generate_data(self, l, model_file, train_example_filename):
+        nnet = nn(self.game)
+        nnet.load_model(filename=model_file)
+
+        c = Coach(self.game, nnet, self.args)
+        train_example = c.execute_episode()
+
+        l.acquire()
+        try:
+            folder = self.args['checkpoint']
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+            filename = os.path.join(folder + train_example_filename)
+            with open(filename, "ab+") as f:
+                pickle.dump(train_example, f)
+        finally:
+            l.release()
+
+    def generate_data_parallel(self, r, model_file, train_example_filename):
+        lock = Lock()
+        for iteration in range(r):
+            jobs = []
+
+            for _ in range(8):
+                p = Process(target=self.generate_data, args=(lock, model_file, train_example_filename))
+                jobs.append(p)
+                p.start()
+
+            for job in jobs:
+                job.join()
 
