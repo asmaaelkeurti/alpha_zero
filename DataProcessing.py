@@ -24,7 +24,7 @@ def merge_data(file_list):
 
 
 if __name__ == '__main__':
-    trainExamples = merge_data(["./temp/train_examples_auto_6"])
+    trainExamples = merge_data(["./temp/train_examples_auto_8"])
     shuffle(trainExamples)
     print(len(trainExamples))
 
@@ -35,14 +35,14 @@ if __name__ == '__main__':
 
 
 if __name__ == 'x':
-    trainExamples = merge_data(merge_data(["./temp/train_examples_auto_6"]))
+    trainExamples = merge_data(["./temp/train_examples_auto_8"])
     g = Game(8)
     nnet = nn(g)
     nnet.load_model(filename="manual_trained_model")
     print(nnet.evaluate_model(trainExamples))
 
 if __name__ == 'x':
-    examples = merge_data(["./temp/train_examples_auto_6"])
+    examples = merge_data(["./temp/train_examples_auto_7"])
     l_sumup = [(np.sum(i[0]), i[2]) for i in examples]
     print(sum(i == (0, -1) or i == (-1, 1) for i in l_sumup))
     print(sum(i == (0, 1) or i == (-1, -1) for i in l_sumup))

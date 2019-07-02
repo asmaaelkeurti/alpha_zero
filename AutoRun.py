@@ -58,7 +58,7 @@ class AutoRun:
         with Pool(8) as p:
             arena_result = p.map(self.arena_process_parallel_function,
                                  [[r, player1_model, palyer2_model, False] for _ in range(8)])
-        return sum([i[0] for i in arena_result]), sum([i[0] for i in arena_result])
+        return sum([i[0] for i in arena_result]), sum([i[1] for i in arena_result])
 
     def generate_data(self, l, model_file, train_example_filename):
         nnet = nn(self.game)
