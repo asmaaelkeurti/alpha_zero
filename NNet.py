@@ -18,11 +18,11 @@ sys.path.append('..')
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 30,
+    'epochs': 200,
     'batch_size': 512,
     'cuda': True,
     # 'num_channels': 512,
-    'num_channels': 16
+    'num_channels': 20
 })
 
 

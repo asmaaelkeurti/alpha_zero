@@ -59,7 +59,7 @@ class Coach:
             board, self.curPlayer = self.game.get_next_state(board, self.curPlayer, action)
 
             r = self.game.get_game_ended(board, self.curPlayer)
-            # display(board)
+            display(board)
             # display_pi(np.array(pi[:-1]).reshape((len(canonicalBoard), len(canonicalBoard))))
 
             return_train_examples = []

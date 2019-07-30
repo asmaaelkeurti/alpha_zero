@@ -7,10 +7,10 @@ from AutoRun import AutoRun
 args = {
     'numIters': 10,
     'numEps': 10,
-    'tempThreshold': 35,
+    'tempThreshold': 100,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 200000,
-    'numMCTSSims': 300,
+    'maxlenOfQueue': 2000000,
+    'numMCTSSims': 500,
     'arenaCompare': 64,
     'cpuct': 1,
 
@@ -21,7 +21,7 @@ args = {
 }
 
 if __name__ == "x":
-    g = Game(8)
+    g = Game(15)
     nnet = nn(g)
 
     if args.load_model:
@@ -34,16 +34,16 @@ if __name__ == "x":
     c.learn()
 
 if __name__ == '__main__':
-    g = Game(8)
+    g = Game(15)
     auto_run = AutoRun(g, args)
 
-    # auto_run.generate_data_debug('model_auto_6')
-    # print(auto_run.arena_process(12, 'manual_trained_model', 'model_auto_8', verbose=True))
+    # auto_run.generate_data('model_auto_6')
+    # print(auto_run.arena_process(12, '_', 'manual_trained_model', verbose=True))
 
-    result = auto_run.arena_process_parallel(12, 'manual_trained_model', 'model_auto_8')
+    result = auto_run.arena_process_parallel(12, '_', 'manual_trained_model', 12)
     # print(result)
 
-    # auto_run.generate_data_parallel(300, 'model_auto_8', 'train_examples_auto_8')
+    # auto_run.generate_data_parallel(300, '_', 'train_examples_auto_1', 16)
 
 
 

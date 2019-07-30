@@ -105,23 +105,24 @@ def display(board):
     # n = board.shape[0]
     n = len(board)
 
+    print("  ", "|", end=" ")
     for y in range(n):
-        print(y, "|", end="  ")
+        print("{:<2}".format(y), "|", end=" ")
     print("")
-    print(" -----------------------")
+    print(" -----------------------------------------------")
     for y in range(n):
-        print(y, "|", end="  ")    # print the row #
+        print("{:<2}".format(y), "|", end=" ")    # print the row #
         for x in range(n):
             piece = board[y][x]    # get the piece to print
             if piece == -1:
-                print("O ", end="  ")
+                print("O  ", end="  ")
             elif piece == 1:
-                print("X ", end="  ")
+                print("X  ", end="  ")
             else:
                 if x == n:
-                    print("-", end="  ")
+                    print("-  ", end="  ")
                 else:
-                    print("- ", end="  ")
+                    print("-  ", end="  ")
         print("|")
 
     print("   -----------------------")

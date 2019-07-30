@@ -32,7 +32,11 @@ class AutoRun:
 
     def arena_process(self, r, old_model_file, new_model_file, verbose=False):
         old_net = nn(self.game)
-        old_net.load_model(filename=old_model_file)
+        if len(old_model_file) > 1:
+            nnet.load_model(filename=old_model_file)
+        else:
+            print('random state')
+        # old_net.load_model(filename=old_model_file)
         old_mcts = MCTS(self.game, old_net, self.args)
 
         new_net = nn(self.game)
@@ -54,15 +58,18 @@ class AutoRun:
     def arena_process_parallel_function(self, arguments):
         return self.arena_process(arguments[0], arguments[1], arguments[2], arguments[3])
 
-    def arena_process_parallel(self, r, player1_model, palyer2_model):
-        with Pool(8) as p:
+    def arena_process_parallel(self, r, player1_model, palyer2_model, n_multiprocessing):
+        with Pool(6) as p:
             arena_result = p.map(self.arena_process_parallel_function,
-                                 [[r, player1_model, palyer2_model, False] for _ in range(8)])
+                                 [[r, player1_model, palyer2_model, False] for _ in range(n_multiprocessing)])
         return sum([i[0] for i in arena_result]), sum([i[1] for i in arena_result])
 
     def generate_data(self, l, model_file, train_example_filename):
         nnet = nn(self.game)
-        nnet.load_model(filename=model_file)
+        if len(model_file) > 2:
+            nnet.load_model(filename=model_file)
+        else:
+            print('random nn model')
 
         c = Coach(self.game, nnet, self.args)
         train_example = c.execute_episode()
@@ -78,12 +85,12 @@ class AutoRun:
         finally:
             l.release()
 
-    def generate_data_parallel(self, r, model_file, train_example_filename):
+    def generate_data_parallel(self, r, model_file, train_example_filename, n_parallel):
         lock = Lock()
         for iteration in range(r):
             jobs = []
 
-            for _ in range(8):
+            for _ in range(n_parallel):
                 p = Process(target=self.generate_data, args=(lock, model_file, train_example_filename))
                 jobs.append(p)
                 p.start()
@@ -93,7 +100,10 @@ class AutoRun:
 
     def generate_data_debug(self, model_file):
         nnet = nn(self.game)
-        nnet.load_model(filename=model_file)
+        if len(model_file) > 1:
+            nnet.load_model(filename=model_file)
+        else:
+            print('random state')
 
         c = Coach(self.game, nnet, self.args)
         train_example = c.execute_episode()

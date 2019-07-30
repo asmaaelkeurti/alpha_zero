@@ -31,8 +31,8 @@ args = dotdict({
 
 
 def mcts_test():
-    g = Game(8)
-    b = Board(8)
+    g = Game(15)
+    b = Board(15)
     nnet = nn(g)
 
     mcts = MCTS(g, nnet, args)
@@ -77,7 +77,7 @@ def generate_data(l):
         l.release()
 
 
-if __name__ == "__main__":
+if __name__ == "x":
     lock = Lock()
 
     for iteration in range(100):
@@ -93,5 +93,5 @@ if __name__ == "__main__":
 
         print(iteration)
 
-if __name__ == "x":
+if __name__ == "__main__":
     mcts_test()
