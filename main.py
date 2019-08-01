@@ -10,7 +10,7 @@ args = {
     'tempThreshold': 100,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000000,
-    'numMCTSSims': 500,
+    'numMCTSSims': 1000,
     'arenaCompare': 64,
     'cpuct': 1,
 
@@ -40,10 +40,10 @@ if __name__ == '__main__':
     # auto_run.generate_data('model_auto_6')
     # print(auto_run.arena_process(12, '_', 'manual_trained_model', verbose=True))
 
-    result = auto_run.arena_process_parallel(12, '_', 'manual_trained_model', 12)
+    # result = auto_run.arena_process_parallel(2, '_', 'manual_trained_model', 16)
     # print(result)
 
-    # auto_run.generate_data_parallel(300, '_', 'train_examples_auto_1', 16)
+    auto_run.generate_data_parallel(20, 'manual_trained_model_gpu', 'train_examples_auto_2_3', 16)
 
 
 

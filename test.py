@@ -9,6 +9,8 @@ import pickle
 import numpy as np
 import os
 from multiprocessing import Process, Lock
+import random
+import time
 
 
 args = dotdict({
@@ -77,6 +79,10 @@ def generate_data(l):
         l.release()
 
 
+def f(x):
+    time.sleep(random.randint(1,10))
+
+
 if __name__ == "x":
     lock = Lock()
 
@@ -94,4 +100,26 @@ if __name__ == "x":
         print(iteration)
 
 if __name__ == "__main__":
-    mcts_test()
+    jobs = []
+    for _ in range(4):
+        p = Process(target=f, args=(1,))
+        jobs.append(p)
+        p.start()
+
+    while True:
+        time.sleep(2)
+        print(len([p for p in jobs if p.is_alive()]), 'p alive')
+        print(len(jobs), 'jobs')
+
+        if len([p for p in jobs if p.is_alive()]) < 4:
+
+            p = Process(target=f, args=(1,))
+            jobs.append(p)
+            p.start()
+
+            ended_p = [p for p in jobs if not p.is_alive()]
+            [jobs.remove(p) for p in ended_p]
+
+
+    # mcts_test()
+

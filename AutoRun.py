@@ -7,6 +7,7 @@ from Arena import Arena
 from multiprocessing import Pool, Lock, Process
 from Coach import Coach
 import os
+import time
 
 
 class AutoRun:
@@ -59,7 +60,7 @@ class AutoRun:
         return self.arena_process(arguments[0], arguments[1], arguments[2], arguments[3])
 
     def arena_process_parallel(self, r, player1_model, palyer2_model, n_multiprocessing):
-        with Pool(6) as p:
+        with Pool(n_multiprocessing) as p:
             arena_result = p.map(self.arena_process_parallel_function,
                                  [[r, player1_model, palyer2_model, False] for _ in range(n_multiprocessing)])
         return sum([i[0] for i in arena_result]), sum([i[1] for i in arena_result])
@@ -85,8 +86,12 @@ class AutoRun:
         finally:
             l.release()
 
+    def generate_data_parallel_function(self, l, model_file, train_example_filename):
+        self.generate_data(l, model_file,train_example_filename)
+
     def generate_data_parallel(self, r, model_file, train_example_filename, n_parallel):
         lock = Lock()
+
         for iteration in range(r):
             jobs = []
 
@@ -95,8 +100,19 @@ class AutoRun:
                 jobs.append(p)
                 p.start()
 
-            for job in jobs:
-                job.join()
+            while True:
+                time.sleep(10)
+
+                if len([p for p in jobs if p.is_alive()]) < n_parallel:
+                    p = Process(target=self.generate_data, args=(lock, model_file, train_example_filename))
+                    jobs.append(p)
+                    p.start()
+
+                    ended_p = [p for p in jobs if not p.is_alive()]
+                    [jobs.remove(p) for p in ended_p]
+
+            # for job in jobs:
+            #     job.join()
 
     def generate_data_debug(self, model_file):
         nnet = nn(self.game)
