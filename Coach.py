@@ -50,7 +50,10 @@ class Coach:
             canonicalBoard = self.game.get_canonical_form(board, self.curPlayer)
             temp = int(episodeStep < self.args['tempThreshold'])
 
-            pi = self.mcts.get_action_prob(canonicalBoard, temp=temp)
+            if self.curPlayer == 1:
+                pi = self.mcts.get_action_prob(canonicalBoard, temp=temp, numMCTSSims=self.args['numMCTSSims'])
+            else:
+                pi = self.mcts.get_action_prob(canonicalBoard, temp=temp, numMCTSSims=int(self.args['numMCTSSims']*1))
             sym = self.game.get_symmetries(canonicalBoard, pi)
             for b, p in sym:
                 trainExamples.append([b, self.curPlayer, p, None])

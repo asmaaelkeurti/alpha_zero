@@ -12,7 +12,7 @@ args = {
     'maxlenOfQueue': 2000000,
     'numMCTSSims': 1000,
     'arenaCompare': 64,
-    'cpuct': 1,
+    'cpuct': 3,
 
     'checkpoint': './temp/',
     'load_model': False,
@@ -38,12 +38,12 @@ if __name__ == '__main__':
     auto_run = AutoRun(g, args)
 
     # auto_run.generate_data('model_auto_6')
-    # print(auto_run.arena_process(12, '_', 'manual_trained_model', verbose=True))
+    # print(auto_run.arena_process(12, 'manual_trained_model_gpu', 'manual_trained_model_gpu', verbose=True))
 
-    # result = auto_run.arena_process_parallel(2, '_', 'manual_trained_model', 16)
+    # result = auto_run.arena_process_parallel(2, 'manual_trained_model_gpu', 'manual_trained_model_gpu', 5)
     # print(result)
 
-    auto_run.generate_data_parallel(20, 'manual_trained_model_gpu', 'train_examples_auto_2_3', 16)
+    auto_run.generate_data_parallel(20, '_', 'train_examples_auto_1', 8)
 
 
 

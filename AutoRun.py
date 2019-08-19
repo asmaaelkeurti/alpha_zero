@@ -34,7 +34,7 @@ class AutoRun:
     def arena_process(self, r, old_model_file, new_model_file, verbose=False):
         old_net = nn(self.game)
         if len(old_model_file) > 1:
-            nnet.load_model(filename=old_model_file)
+            old_net.load_model(filename=old_model_file)
         else:
             print('random state')
         # old_net.load_model(filename=old_model_file)
@@ -45,12 +45,12 @@ class AutoRun:
         new_mcts = MCTS(self.game, new_net, self.args)
 
         def old_player(x):
-            pi = old_mcts.get_action_prob(x)
+            pi = old_mcts.get_action_prob(x, self.args['numMCTSSims'])
             # display_pi(np.array(pi[:-1]).reshape((len(x), len(x))))
             return np.random.choice(len(pi), p=pi)
 
         def new_player(x):
-            pi = new_mcts.get_action_prob(x)
+            pi = new_mcts.get_action_prob(x, int(self.args['numMCTSSims']*1))
             return np.random.choice(len(pi), p=pi)
 
         arena = Arena(player1=lambda x: old_player(x), player2=lambda x: new_player(x), game=self.game, display=display)
@@ -87,7 +87,7 @@ class AutoRun:
             l.release()
 
     def generate_data_parallel_function(self, l, model_file, train_example_filename):
-        self.generate_data(l, model_file,train_example_filename)
+        self.generate_data(l, model_file, train_example_filename)
 
     def generate_data_parallel(self, r, model_file, train_example_filename, n_parallel):
         lock = Lock()
@@ -96,6 +96,7 @@ class AutoRun:
             jobs = []
 
             for _ in range(n_parallel):
+                time.sleep(10)
                 p = Process(target=self.generate_data, args=(lock, model_file, train_example_filename))
                 jobs.append(p)
                 p.start()
